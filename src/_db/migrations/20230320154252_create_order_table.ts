@@ -3,13 +3,13 @@ import { commonFields, id } from '../helper';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('orders', function (table) {
-    id(table);
+    id(table);   // not necessary 
     table
-      .bigInteger('customer_id')
+      .bigInteger('credit_customer_id')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('locofastroot');
+      .inTable('credit_customer');
     // maybe need to change to locofast root
     table
       .bigInteger('supplier_id')

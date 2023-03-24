@@ -5,11 +5,11 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('delivery_details', function (table) {
     id(table);
     table
-      .bigInteger('customer_id')
+      .bigInteger('credit_customer_id')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('locofastroot');
+      .inTable('credit_customer');
     table.string('consignee_name');
     table.string('phone');
     table.string('address_line1');

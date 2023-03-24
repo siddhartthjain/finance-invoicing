@@ -10,6 +10,11 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .references('id')
       .inTable('products');
+    table
+     .integer('status')
+     .unsigned()
+     .references('status')
+     .inTable('orders')
   });
 }
 

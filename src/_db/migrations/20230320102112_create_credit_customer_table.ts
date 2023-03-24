@@ -5,10 +5,11 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('credit_customer', function (table) {
     id(table);
     table
-      .bigInteger('customer_id')
+      .bigInteger('user_id')
       .notNullable()
+      .unsigned()
       .references('id')
-      .inTable('locofastroot');
+      .inTable('users');
     table.string('first_name').notNullable();
     table.string('last_name').defaultTo('');
     table.boolean('is_credit_available').defaultTo(1);
@@ -17,8 +18,8 @@ export async function up(knex: Knex): Promise<void> {
       .unsigned()
       .notNullable()
       .defaultTo(30);
-    table.integer('credit_charges').notNullable().defaultTo(2);
-    table.integer;
+    table.integer('credit_charges').notNullable().defaultTo(2);  
+    table.integer;   // ?
     commonFields(knex, table);
   });
 }
