@@ -10,15 +10,11 @@ export function commonFields(knex: Knex, table) {
     .notNullable()
     .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
 
-  table.bigInteger('created_by').notNullable();
-
   table
     .timestamp('modified_on')
     .notNullable()
     .defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
-  table.bigInteger('modified_by').notNullable();
-
-  table.bigInteger('created_by').references('id').inTable('users');
-  table.bigInteger('modified_by').references('id').inTable('users');
+  table.bigInteger('created_by').unsigned().references('id').inTable('users');
+  table.bigInteger('modified_by').unsigned().references('id').inTable('users');
 }

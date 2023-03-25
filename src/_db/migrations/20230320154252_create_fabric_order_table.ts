@@ -2,7 +2,7 @@ import * as Knex from 'knex';
 import { commonFields, id } from '../helper';
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable('orders', function (table) {
+  return knex.schema.createTable('fabric_order', function (table) {
     id(table);
     table
       .bigInteger('customer_id')
@@ -18,11 +18,11 @@ export async function up(knex: Knex): Promise<void> {
       .references('id')
       .inTable('suppliers');
     table
-      .bigInteger('product_id')
+      .bigInteger('fabric_id')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('products');
+      .inTable('fabrics');
     table
       .bigInteger('delivery_id')
       .unsigned()
