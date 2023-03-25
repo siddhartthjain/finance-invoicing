@@ -6,7 +6,6 @@ export interface Response extends BaseResponse {
     status?: number | string,
   ): any;
 
-  
   error(error: Record<string, any> | string, status?: number | string): any;
 
   noContent(): any;
