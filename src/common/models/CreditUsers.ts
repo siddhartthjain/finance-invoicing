@@ -1,19 +1,19 @@
 import { BaseModel } from "src/core/db";
 
 
-export class User extends BaseModel {
-  static tableName = 'users';
-  static modifiers = {
-    defaultSelects(query) {
-      query.select('users.id as userId', 'name', 'role');
-    },
-    selectEmail(query) {
-      query.select('id', 'first_name', 'name', 'email', 'isEnabled');
-    },
-    selectPhone(query) {
-      query.select('calling_code', 'phone');
-    }
-  };
+export class CreditUser extends BaseModel {
+  static tableName = 'credit_users';
+  // static modifiers = {
+  //   defaultSelects(query) {
+  //     query.select('credit_users.id as userId', 'name', 'role');
+  //   },
+  //   selectEmail(query) {
+  //     query.select('id', 'first_name', 'name', 'email', 'isEnabled');
+  //   },
+  //   selectPhone(query) {
+  //     query.select('calling_code', 'phone');
+  //   }
+  // };
 
   static relationMappings = {
     organization: {

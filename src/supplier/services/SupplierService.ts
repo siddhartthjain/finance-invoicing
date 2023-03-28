@@ -13,7 +13,7 @@ export class SupplierService {
     // will have user too in input
     const { gst_number, first_name, last_name, contact_number, email } = inputs;
     // need to add gst check (to avoid same suppliers)
-    const supplier = await this.supplier.create({
+    const supplier = await this.supplier.create({     // supplier table
       gst_number,
       first_name,
       last_name,

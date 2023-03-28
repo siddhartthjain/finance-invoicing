@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('locofastroot');
+      .inTable('credit_customer');
     table.integer('generated_fabric_id');
     table.string('fabric_name').notNullable();
     table.string('fabric_specification').notNullable();
