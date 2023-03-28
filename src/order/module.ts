@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CoreModule } from 'src/core';
 import { FabricModule } from 'src/fabric/module';
 import {
   FABRIC_ORDER_DELIVERY_ADDRESS_REPOSITORY,
@@ -13,7 +14,7 @@ import { ProvisionalOrderService } from './services/ProvisionalOrderService';
 
 @Module({
   controllers: [OrderController, ProvisionalOrderController],
-  imports: [FabricModule],
+  imports: [FabricModule, CoreModule],
   providers: [
     OrderService,
     ProvisionalOrderService,

@@ -4,11 +4,14 @@ import { KNEX_CONNECTION } from './constants';
 import { BaseModel } from './db';
 import * as Knex from 'knex';
 import * as KnexConfig from '../../knexfile';
+import { getProviders } from './provider';
+import { BaseValidator } from './validator';
 
 @Global()
 @Module({
   imports: [ConfigModule.forRoot()],
   providers: [
+    ...getProviders(),
     {
       provide: KNEX_CONNECTION,
       useFactory: async () => {
@@ -18,5 +21,6 @@ import * as KnexConfig from '../../knexfile';
       },
     },
   ],
+  exports: [BaseValidator],
 })
 export class CoreModule {}

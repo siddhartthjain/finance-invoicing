@@ -3,6 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { ValidationFailed } from 'src/core';
+import { BaseValidator } from 'src/core/validator';
 import { FabricService } from 'src/fabric/services';
 import {
   FABRIC_ORDER_DELIVERY_ADDRESS_REPOSITORY,
@@ -13,10 +15,12 @@ import {
   FabricOrderContract,
   FabricOrderDeliveryAddressContract,
 } from '../repositories';
+import { CreateProvisionalOrder } from '../validators';
 
 @Injectable()
 export class ProvisionalOrderService {
   constructor(
+    private validator: BaseValidator,
     @Inject(FABRIC_ORDER_REPOSITORY) private fabricOrder: FabricOrderContract,
     @Inject(FABRIC_ORDER_DELIVERY_ADDRESS_REPOSITORY)
     private fabricOrderDeliveryAddress: FabricOrderDeliveryAddressContract,
@@ -29,56 +33,24 @@ export class ProvisionalOrderService {
     // need to add validation here
     // will have user too in input
     // billTo will be constant (need to discuss)
+    inputs.billTo = 'Locofast Online Private Limited';
+    const { fabricDetails, fabricOrderDeliveryDetails, fabricOrderDetails } =
+      await this.createProvisionalOrderCustomValidator(inputs);
 
-    const {
-      brandId,
-      fabricName,
-      fabricSpecification,
-      hsnCode,
-      billTo = 'Locofast Online Private Limited',
-      estimatedDeliveryDate,
-      terms = '',
-      supplierId,
-      quantity,
-      procurementPrice,
-      unitId,
-      brandDeliveryAddressId,
-    } = inputs;
     let fabricOrder;
     // will calculate using customer credit info
     const finalPrice = 2000;
     const trx = await FabricOrder.startTransaction();
     try {
-      const fabric = await this.fabricService.addFabric(
-        {
-          brandId,
-          fabricName,
-          fabricSpecification,
-          hsnCode,
-        },
-        trx,
-      );
+      const fabric = await this.fabricService.addFabric(fabricDetails, trx);
       const orderDeliveryDetails = await this.fabricOrderDeliveryAddress
         .query(trx)
-        .insert({
-          billTo,
-          estimatedDeliveryDate,
-          terms,
-          brand_address_id: brandDeliveryAddressId,
-          created_by: 1342,
-          modified_by: 1342,
-        });
+        .insert(fabricOrderDeliveryDetails);
       fabricOrder = await this.fabricOrder.query(trx).insert({
-        customer_id: brandId,
-        supplierId: supplierId,
+        ...fabricOrderDetails,
         fabric_id: fabric.id,
         delivery_id: orderDeliveryDetails.id,
-        quantity,
-        procurement_price: procurementPrice,
         final_price: finalPrice,
-        unit_id: unitId,
-        created_by: 1342,
-        modified_by: 1342,
       });
       await trx.commit();
     } catch (error) {
@@ -88,5 +60,67 @@ export class ProvisionalOrderService {
     }
 
     return fabricOrder;
+  }
+
+  private async createProvisionalOrderCustomValidator(
+    inputs: Record<string, any>,
+  ): Promise<Record<string, any>> {
+    const {
+      brandId,
+      fabricName,
+      fabricSpecification,
+      hsnCode,
+      billTo,
+      estimatedDeliveryDate,
+      terms = '',
+      supplierId,
+      quantity,
+      procurementPrice,
+      unitId,
+      brandDeliveryAddressId,
+    } = inputs;
+
+    await this.validator.fire(inputs, CreateProvisionalOrder);
+    /* const hsnRegex = new RegExp(
+      '/^[0-9]{2}s*[0-9]{2}s*[0-9]{2}s*[0-9]{2}s*[0-9]{2}$/',
+    );
+    if (!hsnRegex.test(hsnCode)) {
+      console.log('shi dal le hsn code');
+      throw new ValidationFailed({
+        message: 'Wrong HSN code',
+      });
+    }*/
+
+    const fabricDetails = {
+      brandId,
+      fabricName,
+      fabricSpecification,
+      hsnCode,
+    };
+
+    const fabricOrderDeliveryDetails = {
+      billTo,
+      estimatedDeliveryDate,
+      terms,
+      brand_address_id: brandDeliveryAddressId,
+      created_by: 1342,
+      modified_by: 1342,
+    };
+
+    const fabricOrderDetails = {
+      customer_id: brandId,
+      supplierId: supplierId,
+      quantity,
+      procurement_price: procurementPrice,
+      unit_id: unitId,
+      created_by: 1342,
+      modified_by: 1342,
+    };
+
+    return {
+      fabricDetails,
+      fabricOrderDeliveryDetails,
+      fabricOrderDetails,
+    };
   }
 }

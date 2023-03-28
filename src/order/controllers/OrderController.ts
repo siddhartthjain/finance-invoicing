@@ -1,4 +1,26 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'src/core';
+import { OrderService } from '../services';
 
 @Controller('orders')
-export class OrderController {}
+export class OrderController {
+  constructor(private orderServcie: OrderService) {}
+
+  // need to handle file here
+  @Post(':orderId/dispatch')
+  async dispatchOrder(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const inputs = req.all();
+    await this.orderServcie.dispatchOrder(inputs);
+    return res.noContent();
+  }
+
+  @Post(':orderId/mark-delivered')
+  async markOrderDelivered(@Req() req: Request, @Res() res: Response) {
+    const inputs = req.all();
+    await this.orderServcie.markOrderDelivered(inputs);
+    return res.noContent();
+  }
+}
