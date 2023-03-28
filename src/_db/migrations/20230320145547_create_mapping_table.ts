@@ -1,4 +1,4 @@
-// mapping of cutomer and supplier only but where is prod id
+
 
 import * as Knex from 'knex';
 import { id } from '../helper';
@@ -7,10 +7,10 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('mappings', function (table) {
     id(table);
     table
-      .bigInteger('user_id')
+      .bigInteger('credit_customer_id')
       .notNullable()
       .references('id')
-      .inTable('users');
+      .inTable('credit_customer');
     /*
       need to change the refrence to the locoroot if
       adding suppliers to the locofastroot too
@@ -20,11 +20,7 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .references('id')
       .inTable('suppliers');
-    table
-       .bigInteger('prod_id')
-       .unsigned()
-       .references('id')
-       .inTable('products')  
+    
 
     table
       .timestamp('created_on')

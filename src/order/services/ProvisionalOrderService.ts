@@ -42,9 +42,30 @@ export class ProvisionalOrderService {
     const finalPrice = 2000;
     const trx = await FabricOrder.startTransaction();
     try {
+      const fabric = await this.fabricService.addFabric(       // fabric table
+        {
+          brandId,
+          fabricName,
+          fabricSpecification,
+          hsnCode,
+        },
+        trx,
+      );
+      const orderDeliveryDetails = await this.fabricOrderDeliveryAddress   // deliver table
       const fabric = await this.fabricService.addFabric(fabricDetails, trx);
       const orderDeliveryDetails = await this.fabricOrderDeliveryAddress
         .query(trx)
+        .insert({
+          billTo,
+          estimatedDeliveryDate,
+          terms,
+          brand_address_id: brandDeliveryAddressId,
+          created_by: 1342,
+          modified_by: 1342,
+        });
+      fabricOrder = await this.fabricOrder.query(trx).insert({     //order table
+        customer_id: brandId,
+        supplierId: supplierId,
         .insert(fabricOrderDeliveryDetails);
       fabricOrder = await this.fabricOrder.query(trx).insert({
         ...fabricOrderDetails,

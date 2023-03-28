@@ -2,15 +2,12 @@ import { Module } from '@nestjs/common';
 import { CreditCustomerService } from './service/CreditCustomerService';
 import { CreditCustomerController } from './controller/CreditCustomerController';
 import { CommonModule } from 'src/common/module';
-import { creditCustomerRepository } from './Repositories/database/CreditCustomer';
 import { CREDIT_CUSTOMER_DETAILS_REPOSITORY } from './constants';
+import { CoreModule } from 'src/core';
 
 @Module({
-  imports: [CommonModule],
-  providers: [CreditCustomerService,{
-    provide: CREDIT_CUSTOMER_DETAILS_REPOSITORY,
-    useClass: creditCustomerRepository
-  }],
+  imports: [CommonModule, CoreModule],
+  providers: [CreditCustomerService],
   controllers: [CreditCustomerController],
 })
 export class CreditCustomerModule {}

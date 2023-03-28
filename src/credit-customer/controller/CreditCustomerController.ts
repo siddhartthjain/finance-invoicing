@@ -6,6 +6,19 @@ import { CreditCustomerService } from '../service/CreditCustomerService';
 export class CreditCustomerController {
   constructor(private creditCustomerService: CreditCustomerService) {}
 
+
+ @Post('/create')
+  async createCreditCustomer(
+    @Req() req :Request,
+    @Res() res :Response
+  ):Promise<any>
+  {
+    const inputs = req.all();
+    const user = req.user;
+    return await this.creditCustomerService.createCreditCustomer(inputs, user);
+  }
+
+
   @Get()
   async getcredituser(
     @Req() req: Request,
